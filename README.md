@@ -2,7 +2,7 @@
 
 **Alipay global driver for the Omnipay PHP payment processing library**
 
-[![Build Status](https://travis-ci.org/lokielse/omnipay-global-alipay.png?branch=master)](https://travis-ci.org/lokielse/omnipay-global-alipay)
+![StyleCI build status](https://github.styleci.io/repos/143512827/shield) 
 [![Latest Stable Version](https://poser.pugx.org/lokielse/omnipay-global-alipay/version.png)](https://packagist.org/packages/lokielse/omnipay-global-alipay)
 [![Total Downloads](https://poser.pugx.org/lokielse/omnipay-global-alipay/d/total.png)](https://packagist.org/packages/lokielse/omnipay-global-alipay)
 
