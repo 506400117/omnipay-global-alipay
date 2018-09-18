@@ -6,7 +6,6 @@ use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\GlobalAlipay\Common\Signer;
-use Omnipay\GlobalAlipay\Helper;
 
 class CompletePurchaseRequest extends AbstractRequest
 {
@@ -15,7 +14,6 @@ class CompletePurchaseRequest extends AbstractRequest
     protected $endpointHttps = 'https://mapi.alipay.com/gateway.do?service=notify_verify&';
 
     protected $endpointSandbox = 'https://openapi.alipaydev.com/gateway.do';
-
 
     /**
      * Get the raw data array for this message. The format of this varies from gateway to
@@ -28,7 +26,7 @@ class CompletePurchaseRequest extends AbstractRequest
         $this->validateParam('sign_type', 'sign', 'out_trade_no');
 
         $transport = strtolower($this->getTransport() ?: 'http');
-        $signType  = $this->getRequestParam('sign_type');
+        $signType = $this->getRequestParam('sign_type');
 
         if ($transport == 'https') {
             $this->validate('ca_cert_path');
@@ -40,13 +38,12 @@ class CompletePurchaseRequest extends AbstractRequest
             $this->validate('private_key');
         }
 
-        $data = array(
-            'request_params' => $this->getRequestParams()
-        );
+        $data = [
+            'request_params' => $this->getRequestParams(),
+        ];
 
         return $data;
     }
-
 
     public function validateParam()
     {
@@ -58,91 +55,75 @@ class CompletePurchaseRequest extends AbstractRequest
         }
     }
 
-
     public function setRequestParams($value)
     {
         $this->setParameter('request_params', $value);
     }
-
 
     public function getRequestParams()
     {
         return $this->getParameter('request_params');
     }
 
-
     public function getKey()
     {
         return $this->getParameter('key');
     }
-
 
     public function setKey($value)
     {
         return $this->setParameter('key', $value);
     }
 
-
     public function getPrivateKey()
     {
         return $this->getParameter('private_key');
     }
-
 
     public function setPrivateKey($value)
     {
         return $this->setParameter('private_key', $value);
     }
 
-
     public function getPartner()
     {
         return $this->getParameter('partner');
     }
 
-
     public function setPartner($value)
-
     {
         return $this->setParameter('partner', $value);
     }
-
 
     public function getEnvironment()
     {
         return $this->getParameter('environment');
     }
 
-
     public function setEnvironment($value)
     {
         return $this->setParameter('environment', $value);
     }
-
 
     public function getTransport()
     {
         return $this->getParameter('transport');
     }
 
-
     public function setTransport($value)
     {
         return $this->setParameter('transport', $value);
     }
-
 
     public function getCaCertPath()
     {
         return $this->getParameter('ca_cert_path');
     }
 
-
     public function setCaCertPath($value)
     {
         return $this->setParameter('ca_cert_path', $value);
     }
-
 
     protected function getRequestParam($key)
     {
@@ -156,7 +137,6 @@ class CompletePurchaseRequest extends AbstractRequest
         $this->setParameter('sign_type', $value);
     }
 
-
     public function getSignType()
     {
         return $this->getParameter('sign_type');
@@ -166,7 +146,6 @@ class CompletePurchaseRequest extends AbstractRequest
     {
         $this->setParameter('out_trade_no', $value);
     }
-
 
     public function getOutTradeNo()
     {
@@ -178,17 +157,15 @@ class CompletePurchaseRequest extends AbstractRequest
         $this->setParameter('sign', $value);
     }
 
-
     public function getSign()
     {
         return $this->getParameter('sign');
     }
 
-
     /**
-     * Send the request with specified data
+     * Send the request with specified data.
      *
-     * @param  mixed $data The data to send
+     * @param mixed $data The data to send
      *
      * @return ResponseInterface
      */
@@ -198,24 +175,24 @@ class CompletePurchaseRequest extends AbstractRequest
 
         $signType = strtoupper($this->getRequestParam('sign_type'));
 
-        $sign =  $this->getRequestParam('sign');
+        $sign = $this->getRequestParam('sign');
 
         $notifyId = $this->getRequestParam('notify_id');
         $signer = new Signer($data);
         $content = $signer->getContentToSign();
 
         if ($signType == 'RSA') {
-            $signMatch = (new Signer)->verifyWithRSA($content, $sign, $this->getAlipayPublicKey());
+            $signMatch = (new Signer())->verifyWithRSA($content, $sign, $this->getAlipayPublicKey());
         } else {
-            $signMatch = (new Signer)->verifyWithMD5($content, $sign, $this->getKey());
+            $signMatch = (new Signer())->verifyWithMD5($content, $sign, $this->getKey());
         }
 
-        /**
+        /*
          * Verify through Alipay server if exists notify_id
          */
         if ($notifyId) {
             $verifyResponse = $this->getVerifyResponse($notifyId);
-            $verifyOk       = $this->isNotifyVerifiedOK($verifyResponse);
+            $verifyOk = $this->isNotifyVerifiedOK($verifyResponse);
         } else {
             $verifyOk = true;
         }
@@ -226,7 +203,7 @@ class CompletePurchaseRequest extends AbstractRequest
         $request->setPrivateKey($this->getPrivateKey());
 
         /**
-         * @var TradeQueryResponse $response
+         * @var TradeQueryResponse
          */
         $response = $request->send();
 
@@ -234,7 +211,7 @@ class CompletePurchaseRequest extends AbstractRequest
 
         $data['trade_status'] = $tradeStatus;
 
-        /**
+        /*
          * is paid?
          */
         if ($signMatch && $verifyOk && isset($data['trade_status']) && $data['trade_status'] == 'TRADE_FINISHED') {
@@ -243,29 +220,27 @@ class CompletePurchaseRequest extends AbstractRequest
             $paid = false;
         }
 
-        $responseData = array(
+        $responseData = [
             'sign_match'          => $signMatch,
             'notify_id_verify_ok' => $verifyOk,
             'paid'                => $paid,
-        );
+        ];
 
         return $this->response = new CompletePurchaseResponse($this, $responseData);
     }
 
-
     protected function isNotifyVerifiedOK($verifyResponse)
     {
-        if (preg_match("/true$/i", $verifyResponse)) {
+        if (preg_match('/true$/i', $verifyResponse)) {
             return true;
         } else {
             return false;
         }
     }
 
-
     private function getVerifyResponse($notifyId)
     {
-        $partner  = $this->getPartner();
+        $partner = $this->getPartner();
         $endpoint = $this->getEndpoint();
 
         $url = "{$endpoint}partner={$partner}&notify_id={$notifyId}";
@@ -274,7 +249,6 @@ class CompletePurchaseRequest extends AbstractRequest
 
         return $response;
     }
-
 
     private function getHttpResponseGET($url, $caCertUrl)
     {
@@ -290,13 +264,12 @@ class CompletePurchaseRequest extends AbstractRequest
         return $responseText;
     }
 
-
     private function getEndpoint()
     {
         $transport = strtolower($this->getTransport() ?: 'http');
 
         if ($this->getEnvironment() == 'sandbox') {
-            return $this->endpointSandbox . '?service=notify_verify&';
+            return $this->endpointSandbox.'?service=notify_verify&';
         } else {
             if (strtolower($transport) == 'http') {
                 return $this->endpoint;
@@ -305,7 +278,6 @@ class CompletePurchaseRequest extends AbstractRequest
             }
         }
     }
-
 
     /**
      * @param $signType
@@ -328,7 +300,6 @@ class CompletePurchaseRequest extends AbstractRequest
     {
         return $this->getParameter('alipay_public_key');
     }
-
 
     /**
      * @param $value

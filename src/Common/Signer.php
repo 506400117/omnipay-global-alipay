@@ -6,8 +6,7 @@ use Exception;
 
 /**
  * Sign Tool for Alipay
- * Class Signer
- * @package Omnipay\Alipay\Common
+ * Class Signer.
  */
 class Signer
 {
@@ -28,20 +27,17 @@ class Signer
      */
     private $params;
 
-
     public function __construct(array $params = [])
     {
         $this->params = $params;
     }
 
-
     public function signWithMD5($key)
     {
         $content = $this->getContentToSign();
 
-        return md5($content . $key);
+        return md5($content.$key);
     }
-
 
     public function getContentToSign()
     {
@@ -52,10 +48,9 @@ class Signer
         } elseif ($this->encodePolicy == self::ENCODE_POLICY_JSON) {
             return json_encode($params);
         } else {
-            return null;
+            return;
         }
     }
-
 
     /**
      * @return mixed
@@ -75,7 +70,6 @@ class Signer
         return $params;
     }
 
-
     /**
      * @param $params
      */
@@ -86,7 +80,6 @@ class Signer
         }
     }
 
-
     /**
      * @return array
      */
@@ -94,7 +87,6 @@ class Signer
     {
         return $this->ignores;
     }
-
 
     /**
      * @param array $ignores
@@ -108,12 +100,10 @@ class Signer
         return $this;
     }
 
-
     private function filter($params)
     {
         return array_filter($params, 'strlen');
     }
-
 
     /**
      * @param $params
@@ -122,7 +112,6 @@ class Signer
     {
         ksort($params);
     }
-
 
     public function signWithRSA($privateKey, $alg = OPENSSL_ALGO_SHA1)
     {
@@ -133,12 +122,11 @@ class Signer
         return $sign;
     }
 
-
     public function signContentWithRSA($content, $privateKey, $alg = OPENSSL_ALGO_SHA1)
     {
         $privateKey = $this->prefix($privateKey);
         $privateKey = $this->format($privateKey, self::KEY_TYPE_PRIVATE);
-        $res        = openssl_pkey_get_private($privateKey);
+        $res = openssl_pkey_get_private($privateKey);
 
         $sign = null;
 
@@ -148,6 +136,7 @@ class Signer
             if ($e->getCode() == 2) {
                 $message = $e->getMessage();
                 $message .= "\n应用私钥格式有误，见 https://github.com/lokielse/omnipay-alipay/wiki/FAQs";
+
                 throw new Exception($message, $e->getCode(), $e);
             }
         }
@@ -158,9 +147,8 @@ class Signer
         return $sign;
     }
 
-
     /**
-     * Prefix the key path with 'file://'
+     * Prefix the key path with 'file://'.
      *
      * @param $key
      *
@@ -169,15 +157,14 @@ class Signer
     private function prefix($key)
     {
         if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN' && is_file($key) && substr($key, 0, 7) != 'file://') {
-            $key = 'file://' . $key;
+            $key = 'file://'.$key;
         }
 
         return $key;
     }
 
-
     /**
-     * Convert key to standard format
+     * Convert key to standard format.
      *
      * @param $key
      * @param $type
@@ -197,9 +184,8 @@ class Signer
         return $key;
     }
 
-
     /**
-     * Convert one line key to standard format
+     * Convert one line key to standard format.
      *
      * @param $key
      * @param $type
@@ -229,12 +215,10 @@ class Signer
         return implode("\n", $lines);
     }
 
-
     public function verifyWithMD5($content, $sign, $key)
     {
-        return md5($content . $key) == $sign;
+        return md5($content.$key) == $sign;
     }
-
 
     public function verifyWithRSA($content, $sign, $publicKey, $alg = OPENSSL_ALGO_SHA1)
     {
@@ -243,9 +227,10 @@ class Signer
 
         $res = openssl_pkey_get_public($publicKey);
 
-        if (! $res) {
-            $message = "The public key is invalid";
+        if (!$res) {
+            $message = 'The public key is invalid';
             $message .= "\n支付宝公钥格式有误，见 https://github.com/lokielse/omnipay-alipay/wiki/FAQs";
+
             throw new Exception($message);
         }
 
@@ -256,9 +241,8 @@ class Signer
         return $result;
     }
 
-
     /**
-     * @param boolean $sort
+     * @param bool $sort
      *
      * @return Signer
      */
@@ -268,7 +252,6 @@ class Signer
 
         return $this;
     }
-
 
     /**
      * @param int $encodePolicy

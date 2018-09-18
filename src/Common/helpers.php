@@ -3,13 +3,13 @@
 /**
  * Get an item from an array using "dot" notation.
  *
- * @param  array  $array
- * @param  string $key
- * @param  mixed  $default
+ * @param array  $array
+ * @param string $key
+ * @param mixed  $default
  *
  * @return mixed
  */
-if (! function_exists('array_get')) {
+if (!function_exists('array_get')) {
     function array_get($array, $key, $default = null)
     {
         if (is_null($key)) {
@@ -21,7 +21,7 @@ if (! function_exists('array_get')) {
         }
 
         foreach (explode('.', $key) as $segment) {
-            if (! is_array($array) || ! array_key_exists($segment, $array)) {
+            if (!is_array($array) || !array_key_exists($segment, $array)) {
                 return value($default);
             }
 
@@ -32,7 +32,7 @@ if (! function_exists('array_get')) {
     }
 }
 
-if (! function_exists('array_has')) {
+if (!function_exists('array_has')) {
     function array_has($array, $key)
     {
         if (empty($array) || is_null($key)) {
@@ -44,7 +44,7 @@ if (! function_exists('array_has')) {
         }
 
         foreach (explode('.', $key) as $segment) {
-            if (! is_array($array) || ! array_key_exists($segment, $array)) {
+            if (!is_array($array) || !array_key_exists($segment, $array)) {
                 return false;
             }
 
@@ -55,14 +55,14 @@ if (! function_exists('array_has')) {
     }
 }
 
-/**
+/*
  * Return the default value of the given value.
  *
  * @param  mixed $value
  *
  * @return mixed
  */
-if (! function_exists('value')) {
+if (!function_exists('value')) {
     function value($value)
     {
         return $value instanceof Closure ? $value() : $value;

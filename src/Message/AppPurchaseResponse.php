@@ -7,7 +7,6 @@ use Omnipay\GlobalAlipay\Helper;
 
 class AppPurchaseResponse extends AbstractResponse
 {
-
     /**
      * The embodied request object.
      *
@@ -15,17 +14,15 @@ class AppPurchaseResponse extends AbstractResponse
      */
     protected $request;
 
-
     /**
      * Is the response successful?
      *
-     * @return boolean
+     * @return bool
      */
     public function isSuccessful()
     {
         return true;
     }
-
 
     private function getOrderQuery($data)
     {
@@ -36,12 +33,11 @@ class AppPurchaseResponse extends AbstractResponse
 
         $str = http_build_query($data);
         $str = str_replace('&', '"&', $str);
-        $str = str_replace('=', '="', $str) . '"';
+        $str = str_replace('=', '="', $str).'"';
         $str = urldecode($str);
 
         return $str;
     }
-
 
     public function getOrderString()
     {
