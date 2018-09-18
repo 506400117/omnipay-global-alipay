@@ -18,23 +18,20 @@ class WebPurchaseResponse extends AbstractResponse implements RedirectResponseIn
      */
     protected $request;
 
-
     /**
      * Is the response successful?
      *
-     * @return boolean
+     * @return bool
      */
     public function isSuccessful()
     {
         return true;
     }
 
-
     public function isRedirect()
     {
         return true;
     }
-
 
     /**
      * Gets the redirect target url.
@@ -44,7 +41,6 @@ class WebPurchaseResponse extends AbstractResponse implements RedirectResponseIn
         return sprintf('%s?%s', $this->getEndpoint(), http_build_query($this->getRedirectData()));
     }
 
-
     /**
      * Get the required redirect method (either GET or POST).
      */
@@ -53,7 +49,6 @@ class WebPurchaseResponse extends AbstractResponse implements RedirectResponseIn
         return 'GET';
     }
 
-
     /**
      * Gets the redirect form data array, if the redirect method is POST.
      */
@@ -61,7 +56,6 @@ class WebPurchaseResponse extends AbstractResponse implements RedirectResponseIn
     {
         return $this->request->getData();
     }
-
 
     /**
      * @return string

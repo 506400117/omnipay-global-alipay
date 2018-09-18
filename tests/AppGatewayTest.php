@@ -9,14 +9,12 @@ use Omnipay\Tests\TestCase;
 
 class AppGatewayTest extends TestCase
 {
-
     /**
-     * @var AppGateway $gateway
+     * @var AppGateway
      */
     protected $gateway;
 
     protected $options;
-
 
     public function setUp()
     {
@@ -25,10 +23,9 @@ class AppGatewayTest extends TestCase
         $this->gateway = Omnipay::create('GlobalAlipay_App');
         $this->gateway->setPartner('123456');
         $this->gateway->setSellerId('foo@example.com');
-        $this->gateway->setPrivateKey(__DIR__ . '/Assets/private_key.pem');
+        $this->gateway->setPrivateKey(__DIR__.'/Assets/private_key.pem');
         $this->gateway->setNotifyUrl('http://example.com/notify');
     }
-
 
     public function testPurchase()
     {
@@ -40,14 +37,13 @@ class AppGatewayTest extends TestCase
         ];
 
         /**
-         * @var AppPurchaseResponse $response
+         * @var AppPurchaseResponse
          */
         $response = $this->gateway->purchase($order)->send();
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
         $this->assertNotEmpty($response->getOrderString());
     }
-
 
     public function testCompletePurchase()
     {
@@ -60,7 +56,7 @@ class AppGatewayTest extends TestCase
         ];
 
         /**
-         * @var CompletePurchaseResponse $response
+         * @var CompletePurchaseResponse
          */
         $response = $this->gateway->completePurchase($options)->send();
         $this->assertFalse($response->isSuccessful());
@@ -72,7 +68,7 @@ class AppGatewayTest extends TestCase
             'out_trade_no' => '123456',
         ];
         /**
-         * @var TradeQueryResponse $response
+         * @var TradeQueryResponse
          */
         $response = $this->gateway->query($options)->send();
         $this->assertFalse($response->isSuccessful());

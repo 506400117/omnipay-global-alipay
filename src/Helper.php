@@ -4,7 +4,6 @@ namespace Omnipay\GlobalAlipay;
 
 class Helper
 {
-
     /**
      * @param array  $data
      * @param string $algorithm
@@ -29,21 +28,19 @@ class Helper
         } elseif ($algorithm == 'RSA' || $algorithm == '0001') {
             return self::signWithRSA($query, $key);
         } else {
-            return null;
+            return;
         }
     }
 
-
     public static function signWithMD5($string, $key)
     {
-        return md5($string . $key);
+        return md5($string.$key);
     }
-
 
     public static function signWithRSA($data, $privateKey)
     {
         $privateKey = self::prefixCertificateKeyPath($privateKey);
-        $res        = openssl_pkey_get_private($privateKey);
+        $res = openssl_pkey_get_private($privateKey);
         openssl_sign($data, $sign, $res);
         openssl_free_key($res);
         $sign = base64_encode($sign);
@@ -51,11 +48,10 @@ class Helper
         return $sign;
     }
 
-
     protected static function prefixCertificateKeyPath($key)
     {
         if (strtoupper(substr(PHP_OS, 0, 3)) != 'WIN' && is_file($key) && substr($key, 0, 7) != 'file://') {
-            $key = 'file://' . $key;
+            $key = 'file://'.$key;
         }
 
         return $key;

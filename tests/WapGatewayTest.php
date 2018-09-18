@@ -9,14 +9,12 @@ use Omnipay\Tests\TestCase;
 
 class WapGatewayTest extends TestCase
 {
-
     /**
-     * @var WapGateway $gateway
+     * @var WapGateway
      */
     protected $gateway;
 
     protected $options;
-
 
     public function setUp()
     {
@@ -29,7 +27,6 @@ class WapGatewayTest extends TestCase
         $this->gateway->setNotifyUrl('http://example.com/notify');
     }
 
-
     public function testPurchase()
     {
         $order = [
@@ -39,14 +36,13 @@ class WapGatewayTest extends TestCase
         ];
 
         /**
-         * @var WebPurchaseResponse $response
+         * @var WebPurchaseResponse
          */
         $response = $this->gateway->purchase($order)->send();
         $this->assertTrue($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
         $this->assertNotEmpty($response->getRedirectData());
     }
-
 
     public function testCompletePurchase()
     {
@@ -59,7 +55,7 @@ class WapGatewayTest extends TestCase
         ];
 
         /**
-         * @var CompletePurchaseResponse $response
+         * @var CompletePurchaseResponse
          */
         $response = $this->gateway->completePurchase($options)->send();
         $this->assertFalse($response->isSuccessful());

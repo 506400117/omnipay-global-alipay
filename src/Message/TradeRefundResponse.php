@@ -11,20 +11,21 @@ class TradeRefundResponse extends AbstractResponse
     /**
      * Is the response successful?
      *
-     * @return boolean
+     * @return bool
      */
-    public function isSuccessful ()
+    public function isSuccessful()
     {
         return $this->isRefunded();
     }
 
-    public function isRefunded ()
+    public function isRefunded()
     {
         $data = $this->getData();
+
         return $data['refunded'];
     }
 
-    public function getAlipayResponse ($key = null)
+    public function getAlipayResponse($key = null)
     {
         if ($key) {
             return array_get($this->data, "{$this->key}.{$key}");

@@ -6,17 +6,15 @@ use Omnipay\Common\Message\AbstractResponse;
 
 class CompletePurchaseResponse extends AbstractResponse
 {
-
     /**
      * Is the response successful?
      *
-     * @return boolean
+     * @return bool
      */
     public function isSuccessful()
     {
         return $this->isPaid();
     }
-
 
     public function isSignMatch()
     {
@@ -25,14 +23,12 @@ class CompletePurchaseResponse extends AbstractResponse
         return $data['sign_match'];
     }
 
-
     public function isNotifyIdVerifyOk()
     {
         $data = $this->getData();
 
         return $data['notify_id_verify_ok'];
     }
-
 
     public function isPaid()
     {

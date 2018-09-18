@@ -2,8 +2,8 @@
 
 namespace Omnipay\GlobalAlipay\Message;
 
-use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Common\Exception\InvalidRequestException;
+use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\GlobalAlipay\Common\Signer;
 
@@ -18,8 +18,10 @@ class TradeQueryRequest extends AbstractRequest
     /**
      * Get the raw data array for this message. The format of this varies from gateway to
      * gateway, but will usually be either an associative array, or a SimpleXMLElement.
-     * @return mixed
+     *
      * @throws InvalidRequestException
+     *
+     * @return mixed
      */
     public function getData()
     {
@@ -28,11 +30,11 @@ class TradeQueryRequest extends AbstractRequest
         );
 
         $data = [
-            'out_trade_no' => $this->getOutTradeNo(),
-            'service' => $this->service,
+            'out_trade_no'   => $this->getOutTradeNo(),
+            'service'        => $this->service,
             '_input_charset' => $this->getInputCharset() ?: 'utf-8',
-            'sign_type' => 'RSA',
-            'partner' => $this->getPartner(),
+            'sign_type'      => 'RSA',
+            'partner'        => $this->getPartner(),
         ];
 
         ksort($data);
@@ -43,9 +45,9 @@ class TradeQueryRequest extends AbstractRequest
     }
 
     /**
-     * Send the request with specified data
+     * Send the request with specified data.
      *
-     * @param  mixed $data The data to send
+     * @param mixed $data The data to send
      *
      * @return ResponseInterface
      */
@@ -55,17 +57,17 @@ class TradeQueryRequest extends AbstractRequest
         $url = $this->getEndpoint();
         $body = http_build_query($data);
         $headers = [
-            'Content-Type' => 'application/x-www-form-urlencoded'
+            'Content-Type' => 'application/x-www-form-urlencoded',
         ];
 
         $response = $this->httpClient->request($method, $url, $headers, $body);
 
         $payload = $this->decode($response->getBody());
 
-        /**
+        /*
          * is paid?
          */
-        if (isset($payload['is_success']) && $payload['is_success'] == 'T' && array_get($payload,'response.trade.trade_status') == 'TRADE_FINISHED') {
+        if (isset($payload['is_success']) && $payload['is_success'] == 'T' && array_get($payload, 'response.trade.trade_status') == 'TRADE_FINISHED') {
             $paid = true;
         } else {
             $paid = false;
@@ -79,7 +81,7 @@ class TradeQueryRequest extends AbstractRequest
     /**
      * @return string
      */
-    protected function getRequestMethod ()
+    protected function getRequestMethod()
     {
         return 'POST';
     }
@@ -89,7 +91,7 @@ class TradeQueryRequest extends AbstractRequest
      *
      * @return string
      */
-    protected function getRequestUrl ($data)
+    protected function getRequestUrl($data)
     {
         $queryParams = $data;
 
@@ -101,11 +103,10 @@ class TradeQueryRequest extends AbstractRequest
         return $url;
     }
 
-
     /**
      * @return mixed
      */
-    public function getEndpoint ()
+    public function getEndpoint()
     {
         if ($this->getEnvironment() == 'sandbox') {
             return $this->endpointSandbox;
@@ -118,7 +119,6 @@ class TradeQueryRequest extends AbstractRequest
     {
         return $this->getParameter('environment');
     }
-
 
     public function setEnvironment($value)
     {
@@ -135,16 +135,16 @@ class TradeQueryRequest extends AbstractRequest
         return $this->setParameter('private_key', $value);
     }
 
-    public function getKey ()
+    public function getKey()
     {
         return $this->getParameter('key');
     }
 
-    public function setKey ($value)
+    public function setKey($value)
     {
         return $this->setParameter('key', $value);
     }
-  
+
     public function getPartner()
     {
         return $this->getParameter('partner');
@@ -235,7 +235,7 @@ class TradeQueryRequest extends AbstractRequest
         return $this->getParameter('request_params');
     }
 
-    public function validateParam ()
+    public function validateParam()
     {
         foreach (func_get_args() as $key) {
             $value = $this->getRequestParam($key);
@@ -245,25 +245,24 @@ class TradeQueryRequest extends AbstractRequest
         }
     }
 
-    protected function getRequestParam ($key)
+    protected function getRequestParam($key)
     {
         $params = $this->getRequestParams();
 
         return isset($params[$key]) ? $params[$key] : null;
     }
 
-    public function getTransport ()
+    public function getTransport()
     {
         return $this->getParameter('transport');
     }
 
-
-    public function setTransport ($value)
+    public function setTransport($value)
     {
         return $this->setParameter('transport', $value);
     }
 
-    protected function sign ($params, $signType)
+    protected function sign($params, $signType)
     {
         $signer = new Signer($params);
 
@@ -280,9 +279,10 @@ class TradeQueryRequest extends AbstractRequest
         return $sign;
     }
 
-    protected function decode ($data)
+    protected function decode($data)
     {
         $postObj = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
+
         return json_decode(json_encode($postObj), true);
     }
 }
